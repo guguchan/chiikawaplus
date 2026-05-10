@@ -25,6 +25,7 @@ export default function DollForm({ doll, characters, onClose, onSaved, onRefresh
   const [deleting, setDeleting] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [fetchingPhoto, setFetchingPhoto] = useState(false)
 
   // A2: shared add-character hook (fixes DRY + A3 timing)
   const { newCharName, setNewCharName, addingChar, handleAddChar } = useAddCharacter(
@@ -44,8 +45,10 @@ export default function DollForm({ doll, characters, onClose, onSaved, onRefresh
   // A1: lazy-fetch photo for edit mode (keeps main dolls list photo_base64-free)
   useEffect(() => {
     if (!doll?.id) return
+    setFetchingPhoto(true)
     supabase.from('dolls').select('photo_base64').eq('id', doll.id).single()
       .then(({ data }) => { if (data?.photo_base64) setPhotoBase64(data.photo_base64) })
+      .then(() => setFetchingPhoto(false), () => setFetchingPhoto(false))
   }, [doll?.id])
 
   async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
@@ -197,8 +200,8 @@ export default function DollForm({ doll, characters, onClose, onSaved, onRefresh
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
             <button className="btn-ghost" onClick={onClose}>取消</button>
-            <button className="btn-primary" onClick={handleSave} disabled={saving}>
-              {saving ? '儲存中…' : '儲存'}
+            <button className="btn-primary" onClick={handleSave} disabled={saving || fetchingPhoto}>
+              {fetchingPhoto ? '載入圖片…' : saving ? '儲存中…' : '儲存'}
             </button>
           </div>
         </div>

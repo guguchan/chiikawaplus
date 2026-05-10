@@ -28,10 +28,21 @@ export default function BadgesTab({ badges, characters, onRefresh, onRefreshChar
     if (!missingIds.length) return
     supabase.from('badge_themes').select('id, image_base64')
       .in('id', missingIds)
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) {
+          // Mark all missing IDs with a sentinel so we don't retry on every render
+          setImages(prev => {
+            const next = new Map(prev)
+            for (const id of missingIds) if (!next.has(id)) next.set(id, '')
+            return next
+          })
+          return
+        }
         if (!data) return
         setImages(prev => {
           const next = new Map(prev)
+          // Mark fetched IDs (even if no image) to prevent infinite retries
+          for (const id of missingIds) if (!next.has(id)) next.set(id, '')
           for (const row of data) if (row.image_base64) next.set(row.id, row.image_base64)
           return next
         })
@@ -182,17 +193,16 @@ export default function BadgesTab({ badges, characters, onRefresh, onRefreshChar
                 })}
                 {/* 附圖 */}
                 <td style={{ padding: '8px 12px' }}>
-                  {images.get(b.id) ? (
-                    <img
-                      src={images.get(b.id)!}
-                      alt="附圖"
-                      style={{ width: 'auto', height: 160, objectFit: 'contain', borderRadius: 4, display: 'block' }}
-                    />
-                  ) : (
-                    <div style={{ width: 120, height: 160, background: 'var(--cream-deep)', border: '1px dashed var(--line)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }} />
-                    </div>
-                  )}
+                  {(() => {
+                    const img = images.get(b.id)
+                    if (img) return <img src={img} alt="附圖" style={{ width: 'auto', height: 160, objectFit: 'contain', borderRadius: 4, display: 'block' }} />
+                    if (images.has(b.id)) return <div style={{ width: 120, height: 160, background: 'var(--cream-deep)', border: '1px dashed var(--line)', borderRadius: 4 }} />
+                    return (
+                      <div style={{ width: 120, height: 160, background: 'var(--cream-deep)', border: '1px dashed var(--line)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <span className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }} />
+                      </div>
+                    )
+                  })()}
                 </td>
                 {/* 地區 */}
                 <td style={{ padding: '10px 12px', color: 'var(--ink-soft)' }}>{b.location_name}</td>

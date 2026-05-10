@@ -1,4 +1,5 @@
-const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif']
+// HEIC/HEIF excluded: browser Canvas API cannot decode them, img.onload silently hangs
+const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 
 export function compressImage(file: File, maxDim = 800, quality = 0.75): Promise<string> {
   if (!ALLOWED_MIME.includes(file.type) && !file.type.startsWith('image/')) {

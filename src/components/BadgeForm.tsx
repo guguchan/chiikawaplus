@@ -27,6 +27,7 @@ export default function BadgeForm({ badge, characters, onClose, onSaved, onRefre
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [fetchingPhoto, setFetchingPhoto] = useState(false)
 
   // A2: shared add-character hook (fixes DRY + A3 timing)
   const { newCharName, setNewCharName, addingChar, handleAddChar } = useAddCharacter(
@@ -46,8 +47,10 @@ export default function BadgeForm({ badge, characters, onClose, onSaved, onRefre
   // Q2: stable primitive dep (badge?.id) — lazy-fetch image for edit mode
   useEffect(() => {
     if (!badge?.id) return
+    setFetchingPhoto(true)
     supabase.from('badge_themes').select('image_base64').eq('id', badge.id).single()
       .then(({ data }) => { if (data?.image_base64) setImageBase64(data.image_base64) })
+      .then(() => setFetchingPhoto(false), () => setFetchingPhoto(false))
   }, [badge?.id])
 
   async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
@@ -224,8 +227,8 @@ export default function BadgeForm({ badge, characters, onClose, onSaved, onRefre
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
             <button className="btn-ghost" onClick={onClose}>取消</button>
-            <button className="btn-primary" onClick={handleSave} disabled={saving}>
-              {saving ? '儲存中…' : '儲存'}
+            <button className="btn-primary" onClick={handleSave} disabled={saving || fetchingPhoto}>
+              {fetchingPhoto ? '載入圖片…' : saving ? '儲存中…' : '儲存'}
             </button>
           </div>
         </div>

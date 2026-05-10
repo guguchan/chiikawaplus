@@ -25,10 +25,20 @@ export default function DollsTab({ dolls, characters, onRefresh, onRefreshChars,
     if (!missingIds.length) return
     supabase.from('dolls').select('id, photo_base64')
       .in('id', missingIds)
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) {
+          // Mark IDs with sentinel to prevent infinite retry storm
+          setDollImages(prev => {
+            const next = new Map(prev)
+            for (const id of missingIds) if (!next.has(id)) next.set(id, '')
+            return next
+          })
+          return
+        }
         if (!data) return
         setDollImages(prev => {
           const next = new Map(prev)
+          for (const id of missingIds) if (!next.has(id)) next.set(id, '')
           for (const row of data) if (row.photo_base64) next.set(row.id, row.photo_base64)
           return next
         })

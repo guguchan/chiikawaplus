@@ -32,50 +32,58 @@ export default function App() {
 
   // ── Badge loaders ──────────────────────────────────────────────────────────
   const loadBadgeChars = useCallback(async () => {
-    const { data } = await supabase.from('badge_characters').select('*').order('sort_order')
+    const { data, error } = await supabase.from('badge_characters').select('*').order('sort_order')
+    if (error) { toast(`載入角色失敗：${error.message}`, 'error'); return }
     if (data) setBadgeChars(data)
-  }, [])
+  }, [toast])
 
   const loadBadges = useCallback(async () => {
-    const [{ data: chars }, { data: themes }] = await Promise.all([
+    const [charsResult, themesResult] = await Promise.all([
       supabase.from('badge_characters').select('*').order('sort_order'),
       supabase.from('badge_themes')
         .select('id, location_name, theme_name, region, japanese_name, created_at, badge_ownership(*, badge_characters(*))')
         .order('id'),
     ])
-    if (chars) setBadgeChars(chars)
-    if (themes) setBadges(themes as unknown as BadgeTheme[])
-  }, [])
+    if (charsResult.error) { toast(`載入失敗：${charsResult.error.message}`, 'error'); return }
+    if (themesResult.error) { toast(`載入失敗：${themesResult.error.message}`, 'error'); return }
+    if (charsResult.data) setBadgeChars(charsResult.data)
+    if (themesResult.data) setBadges(themesResult.data as unknown as BadgeTheme[])
+  }, [toast])
 
   // ── Doll loaders ───────────────────────────────────────────────────────────
   const loadDollChars = useCallback(async () => {
-    const { data } = await supabase.from('doll_characters').select('*').order('sort_order')
+    const { data, error } = await supabase.from('doll_characters').select('*').order('sort_order')
+    if (error) { toast(`載入角色失敗：${error.message}`, 'error'); return }
     if (data) setDollChars(data)
-  }, [])
+  }, [toast])
 
   const loadDolls = useCallback(async () => {
-    const [{ data: chars }, { data: dollData }] = await Promise.all([
+    const [charsResult, dollsResult] = await Promise.all([
       supabase.from('doll_characters').select('*').order('sort_order'),
       // Exclude photo_base64 — DollsTab lazy-fetches images per visible doll
       supabase.from('dolls')
         .select('id, character_id, acquired_date, notes, created_at, doll_characters(*)')
         .order('created_at', { ascending: false }),
     ])
-    if (chars) setDollChars(chars)
-    if (dollData) setDolls(dollData as unknown as Doll[])
-  }, [])
+    if (charsResult.error) { toast(`載入失敗：${charsResult.error.message}`, 'error'); return }
+    if (dollsResult.error) { toast(`載入失敗：${dollsResult.error.message}`, 'error'); return }
+    if (charsResult.data) setDollChars(charsResult.data)
+    if (dollsResult.data) setDolls(dollsResult.data as unknown as Doll[])
+  }, [toast])
 
   // ── Auth + initial load ────────────────────────────────────────────────────
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      if (session) {
-        loadedUserRef.current = session.user.id
-        Promise.all([loadBadges(), loadDolls()]).finally(() => setLoading(false))
-      } else {
-        setLoading(false)
-      }
-    })
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        setSession(session)
+        if (session) {
+          loadedUserRef.current = session.user.id
+          Promise.all([loadBadges(), loadDolls()]).finally(() => setLoading(false))
+        } else {
+          setLoading(false)
+        }
+      })
+      .catch(() => setLoading(false))
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession)
