@@ -43,7 +43,7 @@ export default function Header({ badges, badgeChars, dolls, onLogout }: Props) {
           </div>
           <button
             className="btn-ghost"
-            style={{ fontSize: 12, padding: '6px 14px', marginTop: 4, flexShrink: 0 }}
+            style={{ fontSize: 12, padding: '10px 14px', marginTop: 4, flexShrink: 0, minHeight: 44 }}
             onClick={onLogout}
           >
             登出
