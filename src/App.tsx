@@ -146,7 +146,7 @@ export default function App() {
                   marginBottom: -1.5,
                 }}
               >
-                {t === 'badges' ? '🏷 鐵牌' : '🪆 娃娃'}
+                {t === 'badges' ? '🏷 鐵牌' : '🩷 娃娃'}
               </button>
             ))}
           </div>
