@@ -6,7 +6,7 @@ dist
 .gstack/
 
 # Claude 本地設定（不上傳）
-.claude/settings.local.json
+.claude/
 
 # 本地資料檔（不上傳）
 *.xlsx
