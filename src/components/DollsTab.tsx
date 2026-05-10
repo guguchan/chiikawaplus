@@ -102,15 +102,15 @@ export default function DollsTab({ dolls, characters, onRefresh, onRefreshChars,
                 overflow: 'hidden',
                 boxShadow: 'var(--shadow-soft)',
                 transition: 'box-shadow 0.2s, transform 0.2s',
-                cursor: 'pointer',
+                cursor: photo ? 'pointer' : 'default',
               }}
+                onClick={() => photo && setViewPhoto({ src: photo, caption: d.notes ?? undefined })}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-pop)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)' }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-soft)'; (e.currentTarget as HTMLElement).style.transform = 'none' }}
               >
                 {/* Photo */}
                 <div
                   style={{ aspectRatio: '1/1', position: 'relative', background: '#1a1208', overflow: 'hidden' }}
-                  onClick={() => photo && setViewPhoto({ src: photo, caption: d.notes ?? undefined })}
                 >
                   {photo ? (
                     <img src={photo} alt="娃娃照片" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -155,7 +155,7 @@ export default function DollsTab({ dolls, characters, onRefresh, onRefreshChars,
                     )}
                     <button
                       style={{ fontSize: 11, color: 'var(--peach)', background: 'none', border: 'none', cursor: 'pointer', marginLeft: 'auto', minHeight: 44, padding: '0 4px' }}
-                      onClick={() => { setEditDoll(d); setShowForm(true) }}
+                      onClick={e => { e.stopPropagation(); setEditDoll(d); setShowForm(true) }}
                     >
                       編輯 ›
                     </button>
