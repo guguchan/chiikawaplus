@@ -87,6 +87,15 @@ select:focus-visible {
 .animate-float { animation: floatIn 0.35s ease both; }
 .animate-pop   { animation: pop 0.3s cubic-bezier(0.34,1.56,0.64,1) both; }
 
+/* Respect user's motion preference — disable all animations for sensitive users */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* Layout */
 .container {
   max-width: 1240px;
