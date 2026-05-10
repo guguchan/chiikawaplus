@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import type { BadgeTheme, BadgeCharacter } from '../types'
 import BadgeForm from './BadgeForm'
+import PhotoViewer from './PhotoViewer'
 
 interface Props {
   badges: BadgeTheme[]
@@ -22,6 +23,7 @@ export default function BadgesTab({ badges, characters, onRefresh, onRefreshChar
   const [images, setImages] = useState<Map<number, string>>(new Map())
   // P3: local ownership overrides for instant UI feedback (optimistic update)
   const [ownershipOverrides, setOwnershipOverrides] = useState<Map<string, boolean>>(new Map())
+  const [viewPhoto, setViewPhoto] = useState<{ src: string; caption?: string } | null>(null)
 
   useEffect(() => {
     const missingIds = badges.filter(b => !images.has(b.id)).map(b => b.id)
@@ -274,15 +276,18 @@ export default function BadgesTab({ badges, characters, onRefresh, onRefreshChar
               })}
               </div>
             </div>
-            {/* 右：圖片（撐滿整列高度） */}
-            <div style={{ width: 120, flexShrink: 0, background: 'var(--cream-deep)', borderLeft: '1px dashed var(--line)' }}>
-              {(() => {
-                const img = images.get(b.id)
-                return img
-                  ? <img src={img} alt="附圖" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
-                  : null
-              })()}
-            </div>
+            {/* 右：圖片（撐滿整列高度，可點擊放大） */}
+            {(() => {
+              const img = images.get(b.id)
+              return (
+                <div
+                  style={{ width: 120, flexShrink: 0, background: 'var(--cream-deep)', borderLeft: '1px dashed var(--line)', cursor: img ? 'pointer' : 'default' }}
+                  onClick={() => img && setViewPhoto({ src: img, caption: b.theme_name })}
+                >
+                  {img && <img src={img} alt="附圖" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />}
+                </div>
+              )
+            })()}
           </div>
         ))}
       </div>
@@ -298,6 +303,8 @@ export default function BadgesTab({ badges, characters, onRefresh, onRefreshChar
           onToast={onToast}
         />
       )}
+
+      {viewPhoto && <PhotoViewer src={viewPhoto.src} caption={viewPhoto.caption} onClose={() => setViewPhoto(null)} />}
 
       <style>{`
         .badge-table-wrap { display: block; overflow-x: auto; }
