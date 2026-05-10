@@ -139,7 +139,7 @@ export default function BadgeForm({ badge, characters, onClose, onSaved, onRefre
           <h2 style={{ fontFamily: 'var(--font-title)', fontSize: 18, color: 'var(--ink)' }}>
             {isEdit ? '編輯鐵牌主題' : '新增鐵牌主題'}
           </h2>
-          <button onClick={onClose} style={{ color: 'var(--muted)', fontSize: 20, lineHeight: 1 }}>×</button>
+          <button onClick={onClose} style={{ color: 'var(--muted)', fontSize: 20, lineHeight: 1, minHeight: 44, minWidth: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
         </div>
 
         {/* Body */}

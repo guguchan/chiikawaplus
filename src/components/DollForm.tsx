@@ -114,7 +114,7 @@ export default function DollForm({ doll, characters, onClose, onSaved, onRefresh
           padding: '20px 24px 16px', borderBottom: '1px solid var(--line-soft)',
         }}>
           <h2 style={{ fontFamily: 'var(--font-title)', fontSize: 18 }}>{isEdit ? '編輯娃娃' : '新增娃娃'}</h2>
-          <button onClick={onClose} style={{ color: 'var(--muted)', fontSize: 20 }}>×</button>
+          <button onClick={onClose} style={{ color: 'var(--muted)', fontSize: 20, lineHeight: 1, minHeight: 44, minWidth: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
         </div>
 
         <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
