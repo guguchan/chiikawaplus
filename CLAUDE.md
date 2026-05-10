@@ -102,16 +102,85 @@ CI/CD：GitHub repo Secrets
 
 ---
 
-## OpenSpec
+## 開發工具體系
 
-規格文件位於 `openspec/specs/`，有 5 個 capability：
-- `badge-collection` — 鐵牌表格、toggle、篩選、新增編輯
-- `badge-import` — Excel 一次性種子匯入腳本
-- `character-management` — 角色新增與排序
-- `doll-collection` — 娃娃卡片、照片上傳、篩選
-- `supabase-persistence` — DB schema、RLS、環境變數
+這個專案使用三個互補的 AI 開發工具：
 
-Change 紀錄：`openspec/changes/chiikawa-collection-website/`（46/47 tasks 完成，待部署）
+| 工具 | 角色 | 定義 |
+|------|------|------|
+| **OpenSpec** | 定義「做什麼」 | 規格文件，記錄功能需求與 scenarios |
+| **Superpowers** | 控制「怎麼做」 | Claude 的開發紀律與自動執行權限 |
+| **gstack** | 模擬「誰來做」 | AI 角色分工：design-review / qa / review 等 skill |
+
+---
+
+## OpenSpec（做什麼）
+
+規格分兩層：
+
+```
+openspec/
+  specs/                    ← 已發佈的穩定規格（archive 後由 CLI sync）
+  changes/
+    chiikawa-collection-website/   ← 進行中的 change（46/47 tasks）
+      proposal.md           ← 為什麼做這個
+      design.md             ← 技術決策與 trade-off
+      tasks.md              ← 實作任務清單
+      specs/                ← 此 change 的 delta specs（5 個 capability）
+        badge-collection/
+        badge-import/
+        character-management/
+        doll-collection/
+        supabase-persistence/
+    archive/                ← 已完成封存的 changes
+```
+
+**工作流程：**
+1. `openspec new-change` → 建立 proposal / design / tasks / specs
+2. 實作並逐一勾選 tasks（`- [ ]` → `- [x]`）
+3. 部署完成後 → `openspec archive-change chiikawa-collection-website`
+   → CLI 自動將 `changes/.../specs/` sync 到 `specs/`，change 移入 `archive/`
+
+**目前狀態：** 46/47 tasks 完成，task 11.5（GitHub Pages 部署）待執行後 archive
+
+---
+
+## Superpowers（怎麼做）
+
+`.claude/settings.local.json` — 控制 Claude 在此專案可自動執行的指令，無需每次詢問。
+
+**已授權的操作類別：**
+```
+npm run dev / build / preview / typecheck / install / ci
+npx tsx *                    ← 執行 scripts/import-excel.ts 等腳本
+openspec *                   ← 全部 CLI 指令
+gh *                         ← GitHub CLI（部署用）
+git status / log / diff / add / commit / push / branch / show
+ls / find / mkdir
+mcp__Claude_Preview__preview_*   ← 全套 Preview MCP（QA 用）
+WebSearch
+```
+
+> 全域基礎權限繼承自 `~/.claude/CLAUDE.md`（npm run、node、openspec 等）
+
+---
+
+## gstack（誰來做）
+
+gstack skill 模擬不同的 AI 專家角色，各自完成一類任務：
+
+| Skill | 角色 | 本專案執行紀錄 |
+|-------|------|----------------|
+| `/design-review` | UI/UX 設計審查員 | 7 個 finding，全數修復（commits 028415b–6a91b3d） |
+| `/qa` | QA 工程師 | 20 個測試場景，health score 97/100（2026-05-10） |
+| `/review` | Code reviewer | 按需執行 |
+| `/investigate` | Debug 偵探 | 按需執行 |
+| `/ship` | 部署工程師 | 待執行（task 11.5） |
+| `/openspec-archive-change` | 文件管理員 | 部署後執行 |
+
+審查報告位於 `.gstack/`（gitignored，本地保存）：
+- `.gstack/design-audit-20260510/report.json`
+- `.gstack/qa-reports/qa-report-chiikawaplus-2026-05-10.md`
 
 ---
 
