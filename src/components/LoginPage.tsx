@@ -33,7 +33,7 @@ export default function LoginPage() {
         padding: '40px 32px', width: '100%', maxWidth: 380,
       }}>
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{ fontSize: 40, marginBottom: 8, animation: 'drift 3s ease-in-out infinite' }}>🧸</div>
+          <div style={{ fontSize: 40, marginBottom: 8, animation: 'drift 3s ease-in-out infinite' }}>✨</div>
           <h1 style={{ fontFamily: 'var(--font-title)', fontSize: 22, color: 'var(--ink)' }}>吉伊卡哇收藏紀錄</h1>
           <p style={{ color: 'var(--muted)', fontSize: 13, marginTop: 6 }}>請登入以繼續</p>
         </div>

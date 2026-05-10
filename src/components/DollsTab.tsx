@@ -57,26 +57,24 @@ export default function DollsTab({ dolls, characters, onRefresh, onRefreshChars,
   return (
     <div>
       {/* Filters */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center', padding: '16px 0 14px' }}>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', flex: 1 }}>
-          <button className={`chip ${charFilter === null ? 'active' : ''}`} onClick={() => setCharFilter(null)}>全部</button>
-          {characters.map(c => (
-            <button key={c.id} className={`chip ${charFilter === c.id ? 'active' : ''}`} onClick={() => setCharFilter(c.id)}>
-              {c.name}
-              <span style={{ fontSize: 11, opacity: 0.7 }}>
-                {' '}{dolls.filter(d => d.character_id === c.id).length}
-              </span>
-            </button>
-          ))}
-        </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center', padding: '16px 0 14px' }}>
+        <button className={`chip ${charFilter === null ? 'active' : ''}`} onClick={() => setCharFilter(null)}>全部</button>
+        {characters.map(c => (
+          <button key={c.id} className={`chip ${charFilter === c.id ? 'active' : ''}`} onClick={() => setCharFilter(c.id)}>
+            {c.name}
+            <span style={{ fontSize: 11, opacity: 0.7 }}>
+              {' '}{dolls.filter(d => d.character_id === c.id).length}
+            </span>
+          </button>
+        ))}
         <input
           className="field-input"
-          style={{ width: 180, flexShrink: 0 }}
+          style={{ flex: '1 1 120px', minWidth: 120, maxWidth: 200 }}
           placeholder="搜尋備註…"
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
-        <button className="btn-primary" onClick={() => { setEditDoll(null); setShowForm(true) }}>＋ 新增娃娃</button>
+        <button className="btn-primary" style={{ flexShrink: 0 }} onClick={() => { setEditDoll(null); setShowForm(true) }}>＋ 新增娃娃</button>
       </div>
 
       {/* Grid */}

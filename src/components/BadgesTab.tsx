@@ -238,12 +238,23 @@ export default function BadgesTab({ badges, characters, onRefresh, onRefreshChar
             background: 'var(--card)', border: '1px solid var(--line-soft)',
             borderRadius: 'var(--radius-sm)', padding: 14, marginBottom: 10,
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
-              <div>
-                <div style={{ fontWeight: 600, color: 'var(--peach)' }}>{b.theme_name}</div>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 10 }}>
+              {/* 左：編輯按鈕 */}
+              <button className="btn-ghost" style={{ fontSize: 12, padding: '3px 8px', flexShrink: 0 }} onClick={() => { setEditBadge(b); setShowForm(true) }}>編輯</button>
+              {/* 中：主題名稱＋地名 */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 600, color: 'var(--peach)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{b.theme_name}</div>
                 <div style={{ fontSize: 13, color: 'var(--ink-soft)', marginTop: 2 }}>{b.location_name} · {b.region}</div>
               </div>
-              <button className="btn-ghost" style={{ fontSize: 12, padding: '3px 8px' }} onClick={() => { setEditBadge(b); setShowForm(true) }}>編輯</button>
+              {/* 右：圖片縮圖 */}
+              <div style={{ width: 56, height: 56, flexShrink: 0, borderRadius: 6, overflow: 'hidden', background: 'var(--cream-deep)', border: '1px dashed var(--line)' }}>
+                {(() => {
+                  const img = images.get(b.id)
+                  return img
+                    ? <img src={img} alt="附圖" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    : null
+                })()}
+              </div>
             </div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               {characters.map(c => {
