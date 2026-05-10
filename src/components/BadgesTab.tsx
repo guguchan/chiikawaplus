@@ -275,7 +275,7 @@ export default function BadgesTab({ badges, characters, onRefresh, onRefreshChar
               </div>
             </div>
             {/* 右：圖片（撐滿整列高度） */}
-            <div style={{ width: 80, flexShrink: 0, background: 'var(--cream-deep)', borderLeft: '1px dashed var(--line)' }}>
+            <div style={{ width: 120, flexShrink: 0, background: 'var(--cream-deep)', borderLeft: '1px dashed var(--line)' }}>
               {(() => {
                 const img = images.get(b.id)
                 return img
