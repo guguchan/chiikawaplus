@@ -262,6 +262,7 @@ export default function BadgesTab({ badges, characters, onRefresh, onRefreshChar
                       background: owned ? 'var(--peach)' : 'transparent',
                       color: owned ? '#fff' : 'var(--muted)',
                       fontSize: 13, cursor: 'pointer',
+                      minHeight: 44,  /* WCAG 2.5.5 touch target minimum */
                     }}
                   >
                     {owned && '✓ '}{c.name}

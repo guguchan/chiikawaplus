@@ -154,7 +154,7 @@ export default function DollsTab({ dolls, characters, onRefresh, onRefreshChars,
                       <span style={{ fontSize: 11, color: 'var(--muted)' }}>{d.acquired_date}</span>
                     )}
                     <button
-                      style={{ fontSize: 11, color: 'var(--peach)', background: 'none', border: 'none', cursor: 'pointer', marginLeft: 'auto' }}
+                      style={{ fontSize: 11, color: 'var(--peach)', background: 'none', border: 'none', cursor: 'pointer', marginLeft: 'auto', minHeight: 44, padding: '0 4px' }}
                       onClick={() => { setEditDoll(d); setShowForm(true) }}
                     >
                       編輯 ›

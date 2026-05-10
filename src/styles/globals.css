@@ -137,6 +137,7 @@ select:focus-visible {
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
   white-space: nowrap;
+  min-height: 44px;   /* WCAG 2.5.5 touch target minimum */
 }
 .chip:hover { border-color: var(--peach); color: var(--peach); }
 .chip.active {
@@ -168,6 +169,7 @@ select:focus-visible {
   padding: 8px 16px;
   font-size: 13px;
   background: transparent;
+  min-height: 44px;   /* WCAG 2.5.5 touch target minimum */
   transition: border-color 0.15s, color 0.15s, background 0.15s;
 }
 .btn-ghost:hover { border-color: var(--peach); color: var(--peach); }
