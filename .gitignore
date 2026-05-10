@@ -4,3 +4,8 @@ dist
 .env
 *.local
 .gstack/
+
+# 本地資料檔（不上傳）
+*.xlsx
+*.zip
+娃娃圖片/
