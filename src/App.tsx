@@ -16,7 +16,12 @@ export default function App() {
   const [badgeChars, setBadgeChars] = useState<BadgeCharacter[]>([])
   const [dolls, setDolls] = useState<Doll[]>([])
   const [dollChars, setDollChars] = useState<DollCharacter[]>([])
-  const [loading, setLoading] = useState(true)
+  // 只有 localStorage 裡有存過 session token 才顯示 loading，
+  // 否則直接顯示登入頁面，不等 getSession() 的網路回應
+  const hasStoredSession = Object.keys(localStorage).some(
+    k => k.startsWith('sb-') && k.endsWith('-auth-token')
+  )
+  const [loading, setLoading] = useState(hasStoredSession)
   const [toasts, setToasts] = useState<ToastMessage[]>([])
   const [session, setSession] = useState<Session | null>(null)
   const loadedUserRef = useRef<string | null>(null)
